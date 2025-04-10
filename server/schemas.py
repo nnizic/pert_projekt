@@ -8,6 +8,7 @@ from pydantic import BaseModel
 # --- Project ---
 class ProjectBase(BaseModel):
     name: str
+    description: str
 
 
 class ProjectCreate(ProjectBase):

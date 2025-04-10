@@ -17,6 +17,7 @@ class Project(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
 
     tasks = relationship("Task", back_populates="project")
 

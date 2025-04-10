@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from .. import models
 from .. import schemas
 from ..database import SessionLocal, get_db
-from ..services import build_task_graph
+from ..services import backward_pass, build_task_graph, forward_pass, get_critical_path
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -74,3 +74,64 @@ def get_task_graph(project_id: int, db: Session = Depends(get_db)):
         }
         for task_id, data in graph.items()
     }
+
+
+@router.get("/critical_path/{project_id}")
+def get_critical_path_for_project(project_id: int, db: Session = Depends(get_db)):
+    from server.services import (
+        build_task_graph,
+        forward_pass,
+        backward_pass,
+        get_critical_path,
+    )
+
+    # Kreiraj graf zadataka
+    graph = build_task_graph(project_id, db)
+
+    # Izračunaj forward pass i backward pass
+    graph = forward_pass(graph)
+    graph = backward_pass(graph)
+
+    # Dobij kritični put
+    critical_path = get_critical_path(graph)
+
+    return {"critical_path": critical_path}
+
+
+@router.get("/projects/{project_id}/pert")
+def calculate_pert_for_project(project_id: int, db: Session = Depends(get_db)):
+    try:
+        # 1. Izgradi graf zadataka
+        graph = build_task_graph(project_id, db)
+
+        # 2. Napravi forward pass
+        graph = forward_pass(graph)
+
+        # 3. Napravi backward pass
+        graph = backward_pass(graph)
+
+        # 4. Izračunaj kritični put
+        critical_path = get_critical_path(graph)
+
+        # 5. Pripremi rezultate
+        result = {
+            "project_id": project_id,
+            "critical_path": critical_path,
+            "tasks": {
+                task_id: {
+                    "name": data["task"].name,
+                    "early_start": data["early_start"],
+                    "early_finish": data["early_finish"],
+                    "late_start": data["late_start"],
+                    "late_finish": data["late_finish"],
+                    "predecessors": data["predecessors"],
+                    "successors": data["successors"],
+                }
+                for task_id, data in graph.items()
+            },
+        }
+
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
