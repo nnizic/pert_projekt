@@ -54,6 +54,44 @@ Ako dobiješ grešku `ModuleNotFoundError: No module named 'server'`, provjeri d
 
 ---
 
+PERT Project API - Frontend
+
+Frontend za aplikaciju koristi Vue.js framework uz Vite build alat, dok se podaci o projektima i zadacima dohvaćaju putem REST API-ja razvijenog u FastAPI.
+📁 Struktura frontend projekta
+
+```
+pert_frontend/
+├── index.html # Glavna HTML datoteka
+├── vite.config.js # Konfiguracija za Vite build alat
+├── src/
+│ ├── main.js # Ulazna točka Vue aplikacije
+│ ├── App.vue # Glavna komponenta Vue aplikacije
+│ ├── api.js # Axios instanca + API pozivi
+│ ├── router/ # Konfiguracija Vue Routera
+│ └── views/
+│ ├── ProjectList.vue # Komponenta za prikaz projekata
+│ └── PertGraph.vue # Komponenta za prikaz PERT grafa
+
+```
+
+🚀 Pokretanje frontenda
+
+Instaliraj potrebne pakete:
+
+    npm install
+
+Pokreni frontend aplikaciju:
+
+    npm run dev
+
+Aplikacija će biti dostupna na:
+
+```
+
+http://localhost:5173
+
+```
+
 ## 📬 Kontakt
 
 Autor: Neven Nižić  
