@@ -78,7 +78,13 @@ pert_frontend/
 
 Instaliraj potrebne pakete:
 
+```
+    npm create vite@latest pert_frontend -- --template vue
+    cd pert_frontend
     npm install
+    npm install axios vue-router@4
+
+```
 
 Pokreni frontend aplikaciju:
 
